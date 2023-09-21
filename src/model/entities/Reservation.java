@@ -6,21 +6,17 @@ import java.util.concurrent.TimeUnit;
 
 public class Reservation {
 
-    private Integer roomNumber; // Numero do quarto
-    private Date chekIn; // hora da chegada
-    private Date chekOut; // hora da saída
+    private Integer roomNumber;
+    private Date checkIn;
+    private Date checkOut;
+
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-    //Construtores 
-    public Reservation() {
-    }
-
-    public Reservation(Integer roomNumber, Date chekIn, Date chekOut) {
+    public Reservation(Integer roomNumber, Date checkIn, Date checkOut) {
         this.roomNumber = roomNumber;
-        this.chekIn = chekIn;
-        this.chekOut = chekOut;
+        this.checkIn = checkIn;
+        this.checkOut = checkOut;
     }
-    //Metodos get e set
 
     public Integer getRoomNumber() {
         return roomNumber;
@@ -30,36 +26,43 @@ public class Reservation {
         this.roomNumber = roomNumber;
     }
 
-    public Date getChekIn() {
-        return chekIn;
+    public Date getCheckIn() {
+        return checkIn;
     }
 
-    public Date getChekOut() {
-        return chekOut;
+    public Date getCheckOut() {
+        return checkOut;
     }
 
     public long duration() {
-        long diff = chekOut.getTime() - chekIn.getTime();//converte para dias 
-        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);// converte para dias
+        long diff = checkOut.getTime() - checkIn.getTime();
+        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 
-    public void updateDates(Date checkIn, Date checkOut) {
-        this.chekIn = checkIn;
-        this.chekOut = checkOut;
+    public String updateDates(Date checkIn, Date checkOut) {
+        Date now = new Date();
+        if (checkIn.before(now) || checkOut.before(now)) {
+            return "Reservation dates for update must be future dates";
+        }
+
+        if (!checkOut.after(checkIn)) {
+            return "Check-out date must be after check-in date";
+        }
+        this.checkIn = checkIn;
+        this.checkOut = checkOut;
+        return null;
     }
 
     @Override
     public String toString() {
-        return "Romm "
-                + roomNumber 
-                + ", check-in "
-                + sdf.format(chekIn)
-                + ", check-out "
-                + sdf.format(chekOut)
-                + " , "
+        return "Room "
+                + roomNumber
+                + ", check-in: "
+                + sdf.format(checkIn)
+                + ", check-out: "
+                + sdf.format(checkOut)
+                + ", "
                 + duration()
                 + " nights";
-
     }
-
 }
